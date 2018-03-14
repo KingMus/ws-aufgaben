@@ -1,4 +1,4 @@
-![Aufgabe]()
+![Aufgabe](https://github.com/KingMus/ws-aufgaben/blob/master/Aufgaben_VL4/src-bilder/Aufgabe_Resolution_Bild.png)
 
 
 (b -> (a v c)) ^ (b v c) ^ (a -> c) ^ !(!b ^ c) <br>
