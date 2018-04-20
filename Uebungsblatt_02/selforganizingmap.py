@@ -74,7 +74,7 @@ class SOM:
                     bmuColI = col
                     bmuDistance = dist
 
-        print("sample:{0}, bmu:{1}\n".format(randomValue, bmu))
+        #print("sample:{0}, bmu:{1}\n".format(randomValue, bmu))
 
         return [bmuRowI,bmuColI]
 
@@ -108,6 +108,8 @@ class SOM:
 
         neighborhood_radius = int(sqrt(self.somRows*self.somColumns * 0.03))  # influence 5% of neurons at the beginning
 
+        print("Train - Start")
+
         for n in range(steps):
 
             randomValue =  self.getRandomValue();
@@ -117,3 +119,5 @@ class SOM:
             bmuColI = bmu[1]
 
             self.findNeighbours(neighborhood_radius, bmuRowI, bmuColI)
+
+        print("Train - Done")
