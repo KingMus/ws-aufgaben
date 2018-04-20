@@ -12,6 +12,7 @@ Names of the students
 """
 import numpy as np
 import pandas as pd
+from math import sqrt
 import random
 
 class SOM:
@@ -79,9 +80,7 @@ class SOM:
 
 
     #Cooperation
-    def findNeighbours(self, bumRowI, bumColI):
-
-        neighborhood_radius = int(sqrt(self.somRows*self.somColumns * 0.03))  # influence 5% of neurons at the beginning
+    def findNeighbours(self, neighborhood_radius, bmuRowI, bmuColI):
 
         #find all neighbours in radius and adjust their weights
         for nr in range(neighborhood_radius):
@@ -101,16 +100,20 @@ class SOM:
     #Adaption
     def adjustmentOfWeights(self, bmuC, infC, alpha):
         distance = np.subtract(self.map[infC[0], infC[1]], self.map[bmuC[0], bmuC[1]])
-        adapionValues = distance * alpha
-        self.map[infC[0], infC[1]] = np.subtract(self.map[infC[0], infC[1]], adapionValues)
+        adaptionValues = distance * alpha
+        self.map[infC[0], infC[1]] = np.subtract(self.map[infC[0], infC[1]], adaptionValues)
 
 
-    def train(self):
+    def train(self, steps):
 
-        randomValue =  self.getRandomValue();
+        neighborhood_radius = int(sqrt(self.somRows*self.somColumns * 0.03))  # influence 5% of neurons at the beginning
 
-        bmu = self.findBestMatchingUnit(randomValue)
-        bmuRowI = bmu[0]
-        bmuColI = bmu[1]
+        for n in range(steps):
 
-        self.findNeighbours(bumRowI,bumColI)
+            randomValue =  self.getRandomValue();
+
+            bmu = self.findBestMatchingUnit(randomValue)
+            bmuRowI = bmu[0]
+            bmuColI = bmu[1]
+
+            self.findNeighbours(neighborhood_radius, bmuRowI, bmuColI)
