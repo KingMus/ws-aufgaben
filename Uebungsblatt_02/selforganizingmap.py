@@ -121,3 +121,5 @@ class SOM:
             self.findNeighbours(neighborhood_radius, bmuRowI, bmuColI)
 
         print("Train - Done")
+
+        return self.map
