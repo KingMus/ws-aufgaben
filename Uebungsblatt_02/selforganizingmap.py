@@ -15,7 +15,6 @@ import pandas as pd
 import random
 
 class SOM:
-    """Self-organizing map implementation"""
 
     def __init__(self, df, label, somRows, somColumns):
 
@@ -30,8 +29,6 @@ class SOM:
         print(label[0])
         print(somRows)
         print(somColumns)
-
-        print(self.__str__())
 
 
     def generateRandomMap(self):
@@ -54,12 +51,12 @@ class SOM:
 
         return map
 
-    def getRandomValue(self);
+    def getRandomValue(self):
 
-        return random.choice(self.df)
+        return (self.df.sample(n=1)).as_matrix().squeeze()
 
     #Competition
-    def findBestMatchingUnit(self);
+    def findBestMatchingUnit(self, randomValue):
 
         bmu = self.map[0][0] #set an inital bmu
         bmuRowI = 0
@@ -69,26 +66,51 @@ class SOM:
         for row in range(self.somRows):
             for col in range(self.somColumns):
 
-                dist = np.linalg.norm(self.getRandomValue() - self.map[row][col])
-                if (dist < bmuDistance):
+                dist = np.linalg.norm(randomValue - self.map[row][col]) #euclidean norm
+                if (dist < bmuDistance): #store all important values for this neighbour if it is nearer than the last nearest neighbour
                     bmu = self.map[row][col]
                     bmuRowI = row
                     bmuColI = col
                     bmuDistance = dist
 
-        print("sample:{0}, bmu:{1}\n".format(self.getRandomValue(), bmu))
-        
+        print("sample:{0}, bmu:{1}\n".format(randomValue, bmu))
+
         return [bmuRowI,bmuColI]
 
 
+    #Cooperation
+    def findNeighbours(self, bumRowI, bumColI):
+
+        neighborhood_radius = int(sqrt(self.somRows*self.somColumns * 0.03))  # influence 5% of neurons at the beginning
+
+        #find all neighbours in radius and adjust their weights
+        for nr in range(neighborhood_radius):
+            for row in range(self.somRows):
+                for col in range(self.somColumns):
+                    if(row - nr == bmuRowI):
+                        self.adjustmentOfWeights([bmuRowI, bmuColI], [row - nr, col], (1 / (nr + 2)))
+                    if(row + nr == bmuRowI):
+                        self.adjustmentOfWeights([bmuRowI, bmuColI], [row + nr, col], (1 / (nr + 2)))
+                    if(col - nr == bmuColI):
+                        self.adjustmentOfWeights([bmuRowI, bmuColI], [row, col - nr], (1 / (nr + 2)))
+                    if(col + nr == bmuColI):
+                        self.adjustmentOfWeights([bmuRowI, bmuColI], [row, col + nr], (1 / (nr + 2)))
+
+
+
     #Adaption
-    def adjustmentOfWeights(self);
+    def adjustmentOfWeights(self, bmuC, infC, alpha):
+        distance = np.subtract(self.map[infC[0], infC[1]], self.map[bmuC[0], bmuC[1]])
+        adapionValues = distance * alpha
+        self.map[infC[0], infC[1]] = np.subtract(self.map[infC[0], infC[1]], adapionValues)
 
 
-        weightNow =
+    def train(self):
 
+        randomValue =  self.getRandomValue();
 
-        return weightAfter
+        bmu = self.findBestMatchingUnit(randomValue)
+        bmuRowI = bmu[0]
+        bmuColI = bmu[1]
 
-
-        pass
+        self.findNeighbours(bumRowI,bumColI)
